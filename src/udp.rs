@@ -67,7 +67,7 @@ fn echo(socket: &UdpSocket) {
             match socket.send_to(&buf[0..n], client) {
                 Ok(_) => return,
                 Err(e) => {
-                    eprintln!("{}: errro: send_to(): {}", LOG_PREFIX, e);
+                    eprintln!("{}: error: send_to(): {}", LOG_PREFIX, e);
                 }
             }
         }
