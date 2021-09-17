@@ -1,4 +1,4 @@
-// main.rs
+// lib.rs
 
 /*
  * Copyright (C) 2021 Richard Danter. All rights reserved.
@@ -31,12 +31,5 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-use std::thread;
-
-fn main() {
-    // Start the listener threads
-    let tcp_listener = thread::spawn(|| echod::tcp::listener());
-
-    // Wait for threads to exit before application exits
-    tcp_listener.join().unwrap();
-}
+pub mod tcp;
+pub mod udp;
