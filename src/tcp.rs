@@ -35,20 +35,22 @@ use std::net::{TcpListener, TcpStream, Ipv4Addr};
 use std::io::{Read, Write};
 use std::thread;
 
-
 // RFC-862 specifies that the TCP Echo Service use port 7
 //const ECHO_PORT:u16 = 7;
 const ECHO_PORT:u16 = 7777;
 
+// All messages start with this string
 const LOG_PREFIX: &str = "echod: tcp";
 
 pub fn listener() {
     // Binding to the UNSPECIFIED address actually binds to all interfaces
     match TcpListener::bind((Ipv4Addr::UNSPECIFIED, ECHO_PORT)) {
         Ok(socket) => {
+            // We get a new stream for each connection
             for stream in socket.incoming() {
                 match stream {
                     Ok(stream) => {
+                        // Start a thread to handle the connection
                         thread::spawn(|| echo(stream));
                     },
                     Err(e) => {
