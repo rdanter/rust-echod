@@ -1,4 +1,4 @@
-// main.rs
+// udp.rs
 
 /*
  * Copyright (C) 2021 Richard Danter. All rights reserved.
@@ -31,14 +31,49 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-use std::thread;
+use std::net::{UdpSocket, Ipv4Addr};
 
-fn main() {
-    // Start the listener threads
-    let tcp_listener = thread::spawn(|| echod::tcp::listener());
-    let udp_listener = thread::spawn(|| echod::udp::listener());
+// RFC-862 specifies that the UDP Echo Service use port 7
+//const ECHO_PORT:u16 = 7;
+const ECHO_PORT:u16 = 7777;
 
-    // Wait for threads to exit before application exits
-    tcp_listener.join().unwrap();
-    udp_listener.join().unwrap();
+// All messages start with this string
+const LOG_PREFIX: &str = "echod: udp";
+
+pub fn listener() {
+    // Binding to the UNSPECIFIED address actually binds to all interfaces
+    match UdpSocket::bind((Ipv4Addr::UNSPECIFIED, ECHO_PORT)) {
+        Ok(socket) => {
+            loop {
+                // The socket is re-used for all datagrams
+                echo(&socket);
+            }
+        }
+        Err(e) => {
+            eprintln!("{}: error: bind(): {}", LOG_PREFIX, e);
+            return;
+        }
+    }
+}
+
+fn echo(socket: &UdpSocket) {
+    // A buffer to store the received data
+    let mut buf: [u8; 1024] = [0; 1024];
+
+    // Read data from the client
+    // NOTE: If the datagram is larger than the buffer then it is truncated
+    match socket.recv_from(&mut buf) {
+        Ok((n, client)) => {
+            // Write the data we read back to the client
+            match socket.send_to(&buf[0..n], client) {
+                Ok(_) => return,
+                Err(e) => {
+                    eprintln!("{}: errro: send_to(): {}", LOG_PREFIX, e);
+                }
+            }
+        }
+        Err(e) => {
+            eprintln!("{}: error: recv_from(): {}", LOG_PREFIX, e);
+        }
+    }
 }
