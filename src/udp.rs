@@ -34,8 +34,7 @@
 use std::net::{UdpSocket, Ipv4Addr};
 
 // RFC-862 specifies that the UDP Echo Service use port 7
-//const ECHO_PORT:u16 = 7;
-const ECHO_PORT:u16 = 7777;
+const ECHO_PORT:u16 = 7;
 
 // All messages start with this string
 const LOG_PREFIX: &str = "echod: udp";

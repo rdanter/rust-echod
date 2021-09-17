@@ -36,8 +36,7 @@ use std::io::{Read, Write};
 use std::thread;
 
 // RFC-862 specifies that the TCP Echo Service use port 7
-//const ECHO_PORT:u16 = 7;
-const ECHO_PORT:u16 = 7777;
+const ECHO_PORT:u16 = 7;
 
 // All messages start with this string
 const LOG_PREFIX: &str = "echod: tcp";
