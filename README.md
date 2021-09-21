@@ -7,9 +7,10 @@ See docs/rfc862.txt for details.
 
 Installation
 ------------
-The following instructions assume you are using systemd.
+The following sections describe install and setup for different systems.
 
-Copy the following files tot he indicated location:
+### Linux, using systemd
+Copy the following files to the indicated location:
 
   * `target/debug/echod` to `/usr/sbin/echod`
   * `echod.service` to `/lib/systemd/system/echod.service`
