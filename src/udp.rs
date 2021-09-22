@@ -34,7 +34,10 @@
 use std::net::{UdpSocket, Ipv4Addr};
 
 // RFC-862 specifies that the UDP Echo Service use port 7
-const ECHO_PORT:u16 = 7;
+const ECHO_PORT: u16 = 7;
+
+// IP use a 16-bit length field, allowing up to 64KB packets
+const MAX_IP_PACKET_LEN: usize = 65536;
 
 // All messages start with this string
 const LOG_PREFIX: &str = "echod: udp";
@@ -57,10 +60,9 @@ pub fn listener() {
 
 fn echo(socket: &UdpSocket) {
     // A buffer to store the received data
-    let mut buf: [u8; 1024] = [0; 1024];
+    let mut buf: [u8; MAX_IP_PACKET_LEN] = [0; MAX_IP_PACKET_LEN];
 
     // Read data from the client
-    // NOTE: If the datagram is larger than the buffer then it is truncated
     match socket.recv_from(&mut buf) {
         Ok((n, client)) => {
             // Write the data we read back to the client
